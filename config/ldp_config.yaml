@@ -1,0 +1,36 @@
+# Low-Delay P (LDP) Configuration
+# Inherits from default_config.yaml and overrides specific settings
+
+# Encoder Settings
+encoder:
+  config: "LDP"
+  gop_size: 4  # Small GOP for low delay
+  intra_period: 32
+  preset: "fast"  # Faster preset for low-delay
+  
+  # LDP-specific settings
+  max_num_refs: 1  # Single reference for low delay
+  search_range: 64  # Smaller search range
+
+# Temporal propagation enabled for LDP
+roi_detection:
+  temporal:
+    enabled: true
+    keyframe_interval: 8  # More frequent keyframes for low delay
+    propagation_method: "motion_vector"
+    bidirectional: false  # Only forward propagation
+    redetection_triggers:
+      motion_threshold: 8.0  # Lower threshold for low delay
+      divergence_threshold: 0.25
+      occlusion_detection: true
+
+# Motion vector extraction
+motion_vectors:
+  enabled: true
+  extraction_method: "vvc_decoder"
+  bidirectional: false  # Only forward MVs
+
+# Experiment name
+experiment:
+  name: "ldp_configuration"
+  description: "Low-Delay P configuration for real-time applications"

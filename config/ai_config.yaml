@@ -1,0 +1,20 @@
+# All-Intra (AI) Configuration
+# Inherits from default_config.yaml and overrides specific settings
+
+# Encoder Settings
+encoder:
+  config: "AI"
+  gop_size: 1  # All intra
+  intra_period: 1
+  preset: "medium"
+
+# Temporal propagation disabled for AI
+roi_detection:
+  temporal:
+    enabled: false  # No temporal propagation in AI
+    keyframe_interval: 1
+
+# Experiment name
+experiment:
+  name: "ai_configuration"
+  description: "All-Intra configuration - baseline for comparison"

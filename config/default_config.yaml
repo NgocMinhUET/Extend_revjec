@@ -1,0 +1,151 @@
+# Default Configuration for Hierarchical Temporal ROI-VVC
+
+# Project Settings
+project_name: "HT-ROI-VVC"
+version: "1.0.0"
+random_seed: 42
+
+# Dataset Settings
+dataset:
+  name: "MOT16"  # MOT16, MOT17, MOT20
+  root_dir: "./data"
+  sequences:
+    - "MOT16-02"
+    - "MOT16-04"
+    - "MOT16-05"
+    - "MOT16-09"
+    - "MOT16-10"
+    - "MOT16-11"
+    - "MOT16-13"
+  
+# VVC Encoder Settings
+encoder:
+  software: "vvenc"  # VVenC encoder
+  version: "1.9.0"
+  config: "AI"  # AI, RA, LDP
+  qp_values: [22, 27, 32, 37]  # Base QP values
+  gop_size: 16  # GOP size for RA/LDP
+  intra_period: 32  # Intra period
+  frame_rate: 30
+  ctu_size: 128  # CTU size (128x128)
+  preset: "medium"  # slow, medium, fast
+  threads: 8
+
+# ROI Detection Settings
+roi_detection:
+  detector: "yolov8"  # yolov8, yolov5, faster-rcnn
+  model_size: "n"  # n (nano), s (small), m (medium), l (large)
+  confidence_threshold: 0.5
+  nms_threshold: 0.45
+  device: "cuda"  # cuda, cpu
+  batch_size: 1
+  
+  # Temporal propagation settings
+  temporal:
+    enabled: true
+    keyframe_interval: 16  # Run detector every N frames
+    propagation_method: "motion_vector"  # motion_vector, optical_flow
+    redetection_triggers:
+      motion_threshold: 10.0  # pixels
+      divergence_threshold: 0.3  # ratio
+      occlusion_detection: true
+
+# Hierarchical ROI Settings
+hierarchical_roi:
+  enabled: true
+  levels: 3  # Number of levels (Core, Context, Background)
+  
+  # Context ring settings
+  context_ring:
+    adaptive: true
+    base_ratio: 0.2  # Base ring width as ratio of bbox size
+    min_width: 10  # pixels
+    max_width: 50  # pixels
+    motion_factor: 0.3  # Adjustment factor based on motion
+  
+  # Level definitions
+  level_names:
+    0: "background"
+    1: "context"
+    2: "core"
+
+# QP Control Settings
+qp_control:
+  method: "adaptive"  # adaptive, fixed
+  
+  # Base alpha values (QP adjustment)
+  base_alpha:
+    core: 8  # QP decrease for core ROI
+    context: 4  # QP decrease for context
+    background: 6  # QP increase for background
+  
+  # Adaptive alpha settings
+  adaptive:
+    enabled: true
+    texture_weight: 0.3
+    motion_weight: 0.2
+    normalize: true  # Ensure bitrate consistency
+  
+  # QP constraints
+  qp_min: 0
+  qp_max: 51
+  qp_clip: true
+
+# Motion Vector Extraction
+motion_vectors:
+  enabled: true
+  extraction_method: "vvc_decoder"  # vvc_decoder, opencv
+  block_size: 16  # Motion vector block size
+  interpolation: "bilinear"
+
+# Tracking Settings (for evaluation)
+tracking:
+  tracker: "jde"  # JDE tracker
+  model_path: "./models/jde_1088x608.pt"
+  input_size: [1088, 608]
+  confidence_threshold: 0.4
+  track_buffer: 30
+
+# Evaluation Settings
+evaluation:
+  metrics:
+    - "BD-Rate"
+    - "BD-PSNR"
+    - "BD-MOTA"
+    - "MOTA"
+    - "IDF1"
+    - "FP"
+    - "FN"
+    - "encoding_time"
+    - "detection_time"
+  
+  # BD-Rate calculation
+  bd_rate:
+    interpolation: "pchip"  # pchip, cubic
+    min_points: 4
+  
+  # Output settings
+  save_results: true
+  save_plots: true
+  save_videos: false  # Save encoded videos (large files)
+
+# Logging Settings
+logging:
+  level: "INFO"  # DEBUG, INFO, WARNING, ERROR
+  console: true
+  file: true
+  log_dir: "./results/logs"
+  
+# Output Settings
+output:
+  results_dir: "./results"
+  plots_dir: "./results/plots"
+  metrics_dir: "./results/metrics"
+  encoded_dir: "./data/encoded"
+  
+# Experiment Settings
+experiment:
+  name: "default"
+  description: "Default experiment configuration"
+  save_intermediate: false  # Save intermediate results
+  overwrite: false  # Overwrite existing results

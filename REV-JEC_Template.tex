@@ -1,0 +1,415 @@
+\documentclass{JECnew} %Class của tạp chí REV-JEC
+\usepackage[T1]{fontenc}
+\usepackage{textcomp}
+\usepackage[sc]{mathpazo}
+\usepackage[utf8]{inputenc}
+\usepackage{amsmath,amsxtra,amssymb,amsthm,latexsym,amscd,amsfonts,mathtools} % Gói này để sử dụng các loại công thức toán
+\usepackage{multicol} % Chia văn bản thành nhiều cột
+\usepackage{booktabs,multirow} % for tables
+\usepackage{setspace} % Cài đặt khoảng cách các dòng trong văn bản
+\usepackage{graphicx} %graphics, figure
+\usepackage{xcolor} % Chỉnh màu trong bài báo
+\usepackage[square, comma, numbers, sort&compress]{natbib} % Gói này dùng để định dạng trích dẫn TLTK theo dạng [1-4]
+\usepackage{balance} % Cân bằng các cột văn bản theo chiều ngang
+\usepackage{tabulary} % Điều chỉnh độ dài cột trong bảng
+\usepackage{soul,color} % Dùng để highlight và đặt màu cho văn bản
+\usepackage{textgreek} % Thêm các ký hiệu Hy Lạp dạng không in nghiêng
+\usepackage[noabbrev,capitalize,nameinlink]{cleveref}
+\usepackage{subcaption}
+\usepackage{multirow}
+\usepackage{amsmath,amssymb,amsfonts}
+\usepackage{algorithmic}
+\usepackage{textcomp}
+\usepackage{xcolor}
+\usepackage{floatpag}
+\usepackage{float}
+%%%%%%%%%%%%%%%%%%%%% Các tác giả chỉ được thêm riêng các Package từ phần này nhưng không được ảnh hưởng/xung đột với các Package ở phần trên của tạp chí
+%\usepackage{tikz}
+%\usepackage{flushend}
+%\usetikzlibrary{shapes,arrows}
+%\usepackage{mathtools}
+%\usepackage{pdflscape} % xoay trang ngang theo chiều dọc trang giấy
+%\usepackage{epstopdf} % Chuyển đổi ảnh .esp sang .pdf
+%\usepackage{tabularx}
+%\usepackage[super]{nth}
+\usepackage{algorithm} % Tạo sơ đồ thuật toán
+%\usepackage{algpseudocode} % Dùng để viết code trong thuật toán
+%\usepackage{upgreek} % Thêm các ký hiệu Hy Lạp dạng in nghiêng
+\usepackage{gensymb} % Tạo các ký hiệu đo lường
+%\usepackage[colorlinks]{hyperref}
+%\usepackage{empheq} 
+%\usepackage{authblk}
+%\usepackage{caption} % Tạp chí REV-JEC không dùng gói này. Vì vậy, các tác giả không dùng gói này
+%\usepackage{subcaption} % ạp chí REV-JEC không dùng gói này. Vì vậy, các tác giả không dùng gói này
+
+\addtolength{\textheight}{3\baselineskip}
+\newcolumntype{P}[1]{>{\centering\arraybackslash}p{#1}}
+\newcolumntype{R}[1]{>{\raggedleft\arraybackslash}p{#1}}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\begin{document}
+\IEEEspecialpapernotice{Regular Article}
+\title{Decoder-ROI based Versatile Video Coding for Multi-Object Tracking Vision Task}
+
+\author{%
+Huong Bui Thanh$^{1,2}$, Minh Do Ngoc$^1$, Xiem HoangVan$^1$
+    \JECaffiliation{$^1$ VNU-University of Engineering and Technology, Vietnam National University, Hanoi, Vietnam\\
+    	$^2$ Hanoi University of Civil Engineering, Hanoi, Vietnam}
+    \JECcorrespondence{Xiem HoangVan, xiemhoang@vnu.edu.vn}
+    %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+    % Phần này dành cho Ban biên tập
+    \JECcommunication{received xx February 202x, revised xx February 202x, accepted xx March 202x} % Các tác giả không sửa phần này
+	\JECeditor{Prof. Hoang Van Phuc}%Prof. Vo Nguyen Quoc Bao} % Các tác giả không sửa phần này
+	\JEConlineDate{27 December 2023} % Các tác giả không sửa phần này
+	\JEConlineDOI{10.21553/rev-jec.xxx}% % Các tác giả không sửa phần này
+}
+
+\IEEEcompsoctitleabstractindextext{%
+\begin{abstract}
+%% Text of abstract
+Video encoding standards like High Efficiency Video Coding (HEVC) and more recently, Versatile Video Coding (VVC) have introduced significant advancements in multimedia communication applications, such as video conferencing, broadcasting, and notably, E-learning. However, recent developments in artificial intelligence (AI) and big data have given rise to an urgent need for a specialized video encoding model designed for image and video analysis applications, namely video coding for machines (VCM). In this context, we propose a novel video encoding approach that effectively combines the Region of Interest (ROI) coding algorithm with the VVC encoding model. The proposed coding solution identifies ROI within video frames through deep learning models. Consequently, we propose an adaptive compression method for each frame block, ensuring both the execution performance of machine learning applications and the minimal data encoding requirements. In addition, to achieve new coding scheme without adding bitrate, new feature extraction approach is utilized using only decoded information (Decoder-ROI). The results demonstrate that the Decoder-ROI based VVC achieved significant compression improvement when compared to the standard and relevant VCM schemes. Furthermore, ROI exploitation contributes to around 3.25\% reduction in encoding time when compared to the baseline VVC encoding standard.
+
+\end{abstract}
+\begin{keywords}
+Versatile Video Coding, ROI Coding, Machine Vision. 
+\vspace{-8pt}
+\end{keywords}
+}
+\maketitle
+\setcounter{page}{1}
+
+\IEEEpubid{1859-378X--2023-1202~\copyright~2023 REV}
+\IEEEpubidadjcol
+
+\renewcommand{\leftmark}{{\small REV Journal on Electronics and Communications: \textit{Article scheduled for publication in Vol. 14, No. 1, January--March, 2024}}} % Các tác giả không sửa hoặc xóa phần này
+
+\renewcommand{\rightmark}{\small \textbf{Huong Bui Thanh \MakeLowercase{\textit{et al.}}:} Decoder-ROI based Versatile Video Coding for Multi-Object
+Tracking Vision Task}
+
+%-----------------------------------------------------------------------
+
+\section{Introduction}
+
+Nowadays, video has become a ubiquitous medium for communication, entertainment, education, and marketing. With the proliferation of online platforms, the advent of high-speed internet and machine vision applications, the demand for video encoding has never been higher. Accordingly, researchers and organizations worldwide have made significant contributions to video coding technology. Video coding standards have been developed over the years, starting with the first generation, AVC (Advanced Video Coding) \cite{avc}, followed by HEVC (High Efficiency Video Coding) \cite{hevc}, and the latest standard, VVC (Versatile Video Coding) \cite{vvc}. Over the past three decades, many advanced coding technologies have been developed to improve compression performance for video. Particularly with the latest VVC video coding standard, research efforts are focused on enhancing encoding performance in various aspects, as demonstrated in studies such as \cite{electronics_Xiem, atc21_eth, IEEE_SPL_Xiem, electronics_2_Xiem}.\par
+\begin{figure}
+\centering
+\includegraphics[width=0.5\textwidth]{images/Video coding.png}
+\caption{Standard Video Coding System for Machine Vision Applications framework.} 
+\label{Fig:1}
+\end{figure}
+
+Besides, A growing awareness highlights that the majority of video traffic is destined for machine vision consumption. In the contemporary landscape, societies are increasingly becoming multimedia-centric, data-driven, and highly automated. Automation, analysis, and intelligence are expanding beyond human interfaces to cater to the unique requirements of Machine-To-Machine (M2M) and Machine-To-Human (M2H) communications as shown in Figure~\ref{Fig:1}. The ascent of AI-driven video intelligence solutions, exemplified by Video Coding for Machine (VCM) standards \cite{zhang2021use}, tailored for M2M or M2H visual processes, will play a pivotal role in addressing the most profound challenges in multimedia computing, transmission, and storage. VCM is poised to revolutionize everyday operations in this ever-evolving landscape. Subsequently, in 2019, MPEG \cite{mpeg} established a group of experts dedicated to video coding research with the goal of investigating and developing the Video Coding for Machines (VCM) standard \cite{vcm2020}. As a result, research related to VCM in the context of video coding has gained increasing attention and has extended to encompass all the current video coding standards.\par
+\IEEEpubidadjcol 
+To address the VCM problem, approaches are centered around encoding information related to significant features crucial for computer vision tasks. One such approach is Region of Interest (ROI) Coding. The term ROI Coding emerged early in the context of encoding with the JPEG2000 standard \cite{JPEG2000}, focusing on encoding images so that the ROI is represented with higher quality compared to the rest of the image. Subsequently, this term found extensive use in both image and video coding. In video coding, ROI Coding involves encoding the region of interest with higher quality compared to other areas within a frame \cite{roiCoding}. This approach has numerous applications, including online conferencing systems, video surveillance \cite{thanh2024learning, le2018adaptive}, and supporting artificial intelligence tasks. Allocating more bits to the region of interest enhances the differentiation of human faces and behaviors from the surrounding environment, thereby improving video conferencing experiences and tracking performance.\par
+
+Although there have been studies on VCM based on common video coding standards such as H.264/AVC, H.265/HEVC, and H.266/VVC, these studies have primarily focused on building encoders for VCM rather than providing a comprehensive architecture based on traditional standards and ROI Coding \cite{roiCoding}. \par
+
+To address this issue, this paper focuses on presenting a model that combines ROI Coding and the VVC standard. This model addresses two main questions: (1) what information in the video should be encoded to enhance the efficiency of computer analysis and processing, and (2) how  essential information for computers should be encoded. To elaborate this problem, next Section will detail the proposed decoder ROI based VVC framework in which the multi-object tracking task is considered and QP - mode map generation is specified. Afterwards, we discuss the coding performance with the proposed framework and finally, we give some conclusions and outline the future works.   \par
+
+
+
+
+
+
+\section{Proposed Decoder-ROI based VVC Framework}
+\subsection{Overall Framework}
+
+
+\begin{figure}[h]
+\centering
+\includegraphics[width=0.5\textwidth]{images/DVCM Architecture using ROI.png}
+\caption{Decoder-ROI Multi-Object Tracking Vision Task}  
+\label{Fig:D-VCM}
+\end{figure}
+
+The conventional video encoding process, as typically employed in Standard-VCM, as shown in Figure~\ref{Fig:1}, is not efficient for machine vision applications due to its inability to leverage crucial features within the images. In this process, information within each frame is uniformly compressed without distinguishing between different parts of the image. This leads to the loss of significant information, particularly those related to objects directly influencing computer analysis and processing. Furthermore, the traditional video encoding process does not prioritize the preservation of essential features for detection, recognition, and machine vision data processing. Instead, it focuses on reducing the video size and optimizing the Rate-Distortion (RD), which may result in the loss of important information for machine vision applications. Hence, the video encoding process requires enhancement and development to meet the demands of these applications.\par
+For the sake of compressing extracted features from videos to serve VCM tasks, the proposed ROI coding framework, as illustrated in Figure~\ref{Fig:D-VCM}, is introduced. Firstly, the reconstruction of previously coded frame, ${\hat{F}}_{t-1}$ is stored in the Decoded Picture Buffer (DPB). Then, to compress the current frame $F_t$, its Quantization Parameter (QP) map is created based on the ROI information extracted from ${\hat{F}}_{t-1}$, which is the frame most relevant to frame $F_t$ in the video used for object detection tasks.\par
+
+At the decoder side, the reference frame $F_{t-1}$ is also decoded and stored in the DPB. Subsequently, the decoding of frame $F_t$ relies on the QP adjustment information derived from the ROI of the previously reconstructed frame ${\hat{F}}_{t-1}$ stored in the DPB, mirroring the encoding process. In this context, the ROI determination process for frame $F_t$ is synchronized in both  transmitter and receiver sides without encoding any overhead information of QP adjustments.\par
+
+\subsection{Multi-Object Tracking Vision Task}
+\label{subsec:MOT}
+In the field of artificial intelligence, there is a range of critical tasks related to real-time monitoring and localization of multiple objects. One of the most crucial tasks in this domain is Multiple Object Tracking (MOT) \cite{mot}. MOT plays a pivotal role in separating multiple objects, maintaining their identities, and generating individual trajectories for each object based on video input. The objects to be tracked can be pedestrians on the street, vehicles on the road, athletes on the field, or even groups of animals like birds, bats, ants, fish, cells, or bees. Tracking multiple objects can be seen as tracking different components of a single object.\par
+
+\begin{figure}
+\centering
+\includegraphics[width=0.4\textwidth]{images/00099.jpg}
+\caption{Object Tracking Application.} 
+\label{Fig:tracking_Example}
+\end{figure}
+
+Embarking on the journey to enhance the ability to track multiple objects, the JDE (Joint Detection and Embedding) network \cite{jde} has emerged as a critical tool. JDE combines the tasks of object detection and embedding them into feature space, enabling the tracking and maintaining of object identities in real-time scenarios. This integration allows JDE to achieve high accuracy and stability, making it a crucial tool for various real-world applications such as urban traffic management, security surveillance, and many other important tasks. Therefore, our focus will be on evaluating the impact of VCM on the pedestrian tracking task using the JDE model as depicted in Figure~\ref{Fig:tracking_Example}.\par
+
+
+
+\subsection{Decoder - ROI extraction}
+
+\label{subsec:ROI}
+\begin{figure*}[h!]
+\centering
+\includegraphics[width=0.9\textwidth]{images/VCM_Yolo.png}
+\caption{YOLOv5-based Region of Interest (ROI) detection architecture.} 
+\label{Fig:VCM_Yolo}
+\end{figure*}
+\begin{figure}[ht]
+    \centering % <-- added
+\begin{subfigure}[b]{0.2\textwidth}
+  \includegraphics[width=\linewidth]{images/result_Bing.jpg}
+  \caption{BING}
+  \label{fig:1}
+\end{subfigure}\hfil % <-- added
+\quad
+\begin{subfigure}[b]{0.2\textwidth}
+  \includegraphics[width=\linewidth]{images/Output_Top_100_Proposals.png}
+  \caption{EDGE BOXES}
+  \label{fig:2}
+\end{subfigure}\hfil % <-- added
+
+
+\begin{subfigure}[b]{0.2\textwidth}
+  \includegraphics[width=\linewidth]{images/result_hog.jpg}
+  \caption{HOG}
+  \label{fig:4}
+\end{subfigure}\hfil % <-- added
+\begin{subfigure}[b]{0.2\textwidth}
+\quad
+  \includegraphics[width=\linewidth]{images/result_yolo.jpg}
+  \caption{YOLO}
+  \label{fig:5}
+\end{subfigure}\hfil % <-- added
+
+\caption{The comparison of various ROI detectors aiming to achieve exemplary CTUs' ROI for the 10th frame of the MOT16-02 video.}
+\label{fig:B_M}
+\end{figure}
+
+
+ROI-based video coding is a technique where video compression is tailored to the importance of regions within the frame. This approach consists of two main components: defining the ROI and integrating the ROI into a codec framework. However, the challenge in locating ROIs lies in the consideration of time, precision, and the efficiency of computer vision tasks at the decoder side. In surveillance \cite{8540216, 8540215, JCSCE} or object tracking tasks, objects are often constantly in motion. Additionally, the proposed Decoder-ROI framework can operate with any algorithm that provides ROI or proposes bounding boxes for potential objects. To address this, two approaches are presented for ROI retrieval: a traditional machine learning method and a deep learning approach utilizing YOLO.\par
+
+\subsubsection{Traditional ROI detectors}
+
+In this approach, the proposed Decoder-ROI architecture can operate with any ROI-search algorithm. To that end, three traditional approaches have been studied, suitable for locating ROIs in a VCM scenario and fast enough to be applied in an encoding process within practical scenarios. The first method, known as Edge Boxes \cite{edge_boxes}, generates bounding box proposals without explicit classification, providing a user-defined number of boxes. Additionally, Binarized Normed Gradients (BING) \cite{BING} utilizes a feature representation of normalized gradients to yield bounding boxes linked to potential objects. Moreover, the fusion of Histogram of Oriented Gradients (HOG) with Support Vector Machine (SVM) contributes to the classification of significant regions in VCM. HOG extracts feature descriptors from images, subsequently integrated with SVM to efficiently classify regions. These methods, recognized for their efficiency and practical applicability, constitute the foundation of research into effective ROI encoding frameworks.
+
+\subsubsection{Deep learning ROI detectors}
+
+The second approach involves applying a well-known deep learning model, YOLO to search for ROI area in the coded picture. Since the traditional method mentioned earlier defines ROIs based on features related to human perception, such as motion, it may not be suitable for tasks involving multi-object tracking as presented in Section \ref{subsec:MOT}. In this scenario, object tracking is accomplished using the JDE model, which is a neural network structure. Therefore, YOLO, a convolutional neural network, is proposed for the purpose of locating ROIs. An example of applying the traditional machine learning methods and a deep learning approach to an image is provided in Figure~\ref{fig:B_M}. \par
+
+In the realm of object detection algorithms, YOLOv5 \cite{yolov5} stands out among several approaches that have achieved remarkable advancements. In the landscape of architectural object detection, two fundamental concepts have emerged: the One-stage detector and the Two-stage detector (refer to Figure~\ref{Fig:VCM_Yolo}). \par
+
+A common thread among various object detection architectures is the processing of input image features. These features undergo compression via a feature extractor, typically known as the Backbone, before being directed towards the object detector. This object detector comprises the Detection Neck and Detection Head, as depicted in Figure~\ref{Fig:VCM_Yolo}. The Neck serves as a feature aggregator responsible for amalgamating and blending the features extracted within the Backbone. Its primary role is to prepare these features for the subsequent detection step executed in the Head.\par
+
+The distinctive aspect here is that the Head manages the detection process, encompassing both localization and classification tasks for each bounding box. The Two-stage detector performs these tasks separately, merging their outcomes afterward (Sparse Detection). Conversely, the One-stage detector executes these tasks simultaneously (Dense Detection), as illustrated in Figure~\ref{Fig:VCM_Yolo}. YOLO, as a one-stage detector, embodies the principle of "You Only Look Once."
+
+% \begin{figure}[htbp]
+%     \centering % <-- added
+% \begin{subfigure}[b]{0.5\textwidth}
+%   \includegraphics[width=\linewidth]{images/ML.png}
+%   \caption{Machine learning}
+%   \label{fig:ML_DLa}
+% \end{subfigure}\hfil % <-- added
+
+% \begin{subfigure}[b]{0.5\textwidth}
+%   \includegraphics[width=\linewidth]{images/DL.png}
+%   \caption{Deep learning}
+%   \label{fig:ML_DLb}
+% \end{subfigure}\hfil % <-- added
+
+
+% \caption{ROI extraction structure}
+% \label{fig:ML_DL}
+% \end{figure}
+
+\subsection{QP-Mode map generation}
+To focus the encoding on the information relevant to the object tracking task, it is necessary to incorporate this information into the encoder. Specifically, as detailed in section \ref{subsec:ROI}, we can identify the ROI area in the coding picture and stored it as pixel coordinates. Subsequently, the frames, when encoded using the VVC standard, will be divided into Coding Tree Units (CTUs) of size $128\times 128$ in sequence. Therefore, we can determine the CTUs containing the ROI based on their corresponding pixel coordinates.\par
+However, to ensure a consistent bit rate when adjusting the QP values for each Coding Tree Unit (CTU), it is necessary to determine the ratio ($\alpha$) between CTUs that contain the ROI and those that do not, as described in Equation (\ref{cal_al}).\par
+
+\begin{equation}
+\alpha=\frac{\text { Number of CTUs with objects }}{\text { Number of CTUs in total }}
+\label{cal_al}
+\end{equation}
+Subsequently, the QP values of each CTU will be adjusted according to Equation (\ref{cal_qp}) to facilitate the encoding process. Specifically, for CTUs within the ROI, the QP value decreases by an amount \(\alpha \times \delta_{QP}\), whereas for CTUs outside the ROI, the QP value increases correspondingly. This adjustment ensures consistent image quality throughout the encoding process.\par
+
+\begin{equation}
+QP=QP \pm \alpha \times \Delta \mathrm{QP}
+\label{cal_qp}
+\end{equation}
+where $QP$ represents the quality of each CTU, and $\Delta \mathrm{QP}$ is the difference in $QP$ values between regions with objects and regions without objects.
+
+\begin{figure}[h]
+\centering
+\includegraphics[width=0.45\textwidth]{images/modeStructure.jpg}
+\caption{The flowchart of proposed method}  
+\label{Fig:modeStructure}
+\end{figure}
+
+Furthermore, the complexity of algorithms for multi-object tracking and ROI determination, alongside the H266/VVC encoding standard, is high. In fact, the VVC encoding complexity is reported to be 30 times higher than HEVC \cite{complexitVVC}. Therefore, this research proposes a method to reduce the complexity of VVC encoding by adjusting the number of intra prediction modes for each region. Accordingly, each coding unit (CU) determines the number of intra prediction modes based on whether it contains an object or not, as illustrated in the Figure~\ref{Fig:modeStructure}. \par
+
+\section{Performance Evaluation}
+\subsection{Experiment Settings}
+
+\begin{figure*}[hbt]
+    \centering % <-- added
+\begin{subfigure}{0.25\textwidth}
+  \includegraphics[width=\linewidth]{images/MOT16-02_0_rgb.jpg}
+  \caption{}
+\end{subfigure}\hfil % <-- added
+\begin{subfigure}{0.25\textwidth}
+  \includegraphics[width=\linewidth]{images/MOT16-04_0_rgb.jpg}
+  \caption{}
+  \label{fig:2}
+\end{subfigure}\hfil % <-- added
+\begin{subfigure}{0.25\textwidth}
+  \includegraphics[width=\linewidth]{images/MOT16-05_0_rgb.jpg}
+  \caption{}
+\end{subfigure}
+
+\medskip
+\begin{subfigure}{0.25\textwidth}
+  \includegraphics[width=\linewidth]{images/MOT16-10_0_rgb.jpg}
+  \caption{}
+\end{subfigure}\hfil % <-- added
+\begin{subfigure}{0.25\textwidth}
+  \includegraphics[width=\linewidth]{images/MOT16-11_0_rgb.jpg}
+  \caption{}
+\end{subfigure}\hfil % <-- added
+\begin{subfigure}{0.25\textwidth}
+  \includegraphics[width=\linewidth]{images/MOT16-13_0_rgb.jpg}
+  \caption{}
+\end{subfigure}
+\caption{First frame of testing video sequences.}
+\label{fig:firstFrame}
+\end{figure*}
+
+To assess the efficiency of proposed Decoder ROI - VCM solution, the MOT16 Benchmark dataset \cite{milan2016mot16} is ultilized due to its popular use in multi-object tracking task. This dataset comprises six sequences, including both forward-facing footage captured by mobile cameras and top-down surveillance videos. The characteristics of these sequences are particularly suitable for our method due to the minimal abrupt changes between frames, as described in Table I and Figure~\ref{fig:firstFrame}. Additionally, the MOT16 dataset is a standard benchmark widely used for evaluating models in multi-object tracking tasks, providing a reliable basis for comparison and validation. Afterwards, the videos are encoded using the VVenc software \cite{VVenC} and $QP_{base}$ values ues of 22, 27, 30 and 37 in all intra configuration. Subsequently, the decoded videos were fed into JDE-1088x608 \cite{jde} obtain the multiple object tracking and measure its performance with the MOTA (Multiple Object Tracking Accuracy) metric \cite{mota}.\par
+
+In order to assess the efficacy of the proposed approach, the encoding duration inherent to the proposed methodology is compared against that of the VVC standard \cite{vvc}. The temporal efficiency, denoted as Time Saving (TS), of the proposed method is mathematically expressed by Equation~\ref{TS}:
+\begin{equation}
+    TS = \frac{T_{Proposed} - T_{VVenC}}{T_{VVenC}} \times 100\%
+    \label{TS}
+\end{equation}
+where $T_{VVenC}$ represents the total encoding time of the VVenC \cite{VVenC}, $T_{Proposed}$ represents the total encoding time of the proposed method. In addition, BDBR and BD-MOTA \cite{bdmota} are computed to evaluate the performance of the proposed method compared to VVC. BDBR shows the difference in bitrate at the equivalent quality, while BD-MOTA shows the difference in MOTA at the equivalent bitrate. \par
+
+\subsection{Results and discussions}
+
+\begin{figure}[h]
+\centering
+\includegraphics[width=0.5\textwidth]{images/MOT16-02.png}
+\caption{MOTA performance according to rate on MOT16-02 sequence }  
+\label{Fig:MOT16-02}
+\end{figure}
+
+\begin{figure}
+\centering
+\includegraphics[width=0.5\textwidth]{images/huffmancoding.png}
+\caption{The percentage of overhead bits at different QPs in each video test sequence.} 
+\label{Fig:huffmancoding}
+\end{figure}
+
+\begin{table}[ht]
+\centering
+\caption{The time (seconds) to detect ROI by various algorithms on the MOT16-02 sequence}
+\label{tab:time}
+\begin{tabular}{|c|c|c|c|c|}
+\hline
+\textbf{Method} & \textbf{BING}                        & \textbf{EDGE}                        & \textbf{HOG}                         & \textbf{YOLO}                      \\ \hline
+Time   & \multicolumn{1}{r|}{187.79} & \multicolumn{1}{r|}{310.83} & \multicolumn{1}{r|}{256.01} & \multicolumn{1}{r|}{5.40} \\ \hline
+\end{tabular}
+\end{table}
+
+\begin{table}[ht]
+\centering
+\caption{BD-Rate values in \% with the MOTA as quality metric for ROI detection algorithms.}
+\label{tab:per}
+\begin{tabular}{|c|r|r|r|r|}
+\hline
+\textbf{Seq}     & \multicolumn{1}{c|}{\textbf{BING}} & \multicolumn{1}{c|}{\textbf{EDGE}} & \multicolumn{1}{c|}{\textbf{HOG}} & \multicolumn{1}{c|}{\textbf{YOLO}} \\ \hline
+MOT16-02         & 17.43                              & 34.8                               & -9.55                             & -43.95                             \\ \hline
+MOT16-04         & -65.66                             & -71.68                             & -55.12                            & -79.12                             \\ \hline
+MOT16-09         & -45.05                             & 17.54                              & -17.99                            & -57.59                             \\ \hline
+MOT16-10         & -68.94                             & -70.75                             & -70.62                            & -85.80                             \\ \hline
+MOT16-11         & -22.77                             & -2.72                              & -27.73                            & -40.58                             \\ \hline
+MOT16-13         & -18.83                             & -17.23                             & -16.92                            & -66.31                             \\ \hline
+\textbf{Average} & \textbf{-29.12}                    & \textbf{-15.82}                    & \textbf{-29.89}                   & \textbf{-53.34}                    \\ \hline
+\end{tabular}
+\end{table}
+
+% Please add the following required packages to your document preamble:
+% \usepackage{multirow}
+\begin{table}[h]
+\centering
+\label{tab:similarity}
+\caption{The similarity of the QP maps generated on the decoding side and the QP map sent from the encoding side.}
+\begin{tabular}{|c|cccccc|}
+\hline
+\multirow{2}{*}{\textbf{SEQ}}        & \multicolumn{6}{c|}{\textbf{MOT16}}                                                                                                                                                        \\ \cline{2-7} 
+                                     & \multicolumn{1}{c|}{\textbf{02}} & \multicolumn{1}{c|}{\textbf{04}} & \multicolumn{1}{c|}{\textbf{09}} & \multicolumn{1}{c|}{\textbf{10}} & \multicolumn{1}{c|}{\textbf{11}} & \textbf{13} \\ \hline
+\multicolumn{1}{|l|}{Similarty (\%)} & \multicolumn{1}{c|}{99.04}       & \multicolumn{1}{c|}{94.42}       & \multicolumn{1}{c|}{97.25}       & \multicolumn{1}{c|}{97.85}       & \multicolumn{1}{c|}{94.43}       & 98.70       \\ \hline
+\textbf{Average}                     & \multicolumn{6}{c|}{\textbf{96.95}}                                                                                                                                                        \\ \hline
+\end{tabular}
+\label{tab:similarity}
+
+\end{table}
+
+
+In this research, we conducted experiments using the proposed Decoder-ROI model across various ROI detection algorithms as presented in Section \ref{subsec:ROI}. Figure~\ref{Fig:MOT16-02} illustrates the relationship between MOTA and rate on the MOT16-02 sequence. Notably, the YOLO-based approach achieved the best performance compared to other methods. Additionally, the illustration of applying ROI detection algorithms on a provided frame is depicted in Figure~\ref{fig:B_M}. In this context, the BING and EDGE BOXES algorithms identify bounding boxes containing most objects. However, these algorithms' bounding boxes lack precision in object adherence, thereby offering limited improvement in bitrate savings. Conversely, approaches utilizing HOG and YOLO features produce more accurate bounding boxes closely aligned with the objects, optimizing the bitrate allocation for encoding. While the HOG-based approaches consume more time, the ROI detection using YOLO exhibits the fastest processing time, as detailed in Table \ref{tab:time}. Therefore, employing YOLO facilitates an optimization in both bitrate savings and encoding time. \par
+
+Table \ref{tab:per} presents the bit savings ratio computed for different ROI detection algorithms. On average across the MOT16 dataset, the YOLO-based approach achieved the highest bit savings ratio, reaching 53.34\%. This was attributed to YOLO's accurate object detection and precise bounding box generation, enabling maximal bit savings while preserving crucial information for the object tracking task at the decoder end.\par
+
+Additionally, the relevant approach (Encoder-ROI) relying on information from the transmitted QP map from the encoding side requires an extra bit for storing information about the non-object region, termed as overhead bit. Figure~\ref{Fig:huffmancoding} illustrates the percentage of overhead bits for different QP values in each video sequence when encoded using Huffman encoding. However, in the case of the Decoder-ROI approach, the system doesn't necessitate transmitting overhead bits yet achieves effectiveness in generating the QP map. With Decoder-ROI, the generated QP map exhibits high similarity when compared to the QP map generated based on the received overhead bits from the encoding side, as presented in Table~\ref{tab:similarity}. In Table~\ref{tab:similarity}, the similarity is assessed based on the percentage of similarity between two QP maps of Decoder-ROI and Encoder-ROI.\par
+
+
+\begin{table}[]
+\centering
+\caption{Time saving and BDBR loss Comparison}
+\begin{tabular}{|l|r|r|r|}
+\hline
+\multicolumn{1}{|c|}{\textbf{SEQ}}     & \multicolumn{1}{c|}{\textbf{TS}} & \multicolumn{1}{c|}{\textbf{BD-Rate}} & \multicolumn{1}{c|}{\textbf{BD-MOTA}} \\ \hline
+MOT16-02                               & -0.7\%                           & -43.95                                & 2.86                                  \\ \hline
+MOT16-04                               & -1.5\%                           & -79.12                                & 1.17                                  \\ \hline
+MOT16-09                               & -1.6\%                           & -57.59                                & 8.35                                  \\ \hline
+MOT16-10                               & -1.1\%                           & -85.80                                & 5.01                                  \\ \hline
+MOT16-11                               & -1.0\%                           & -40.58                                & 3.27                                  \\ \hline
+MOT16-13                               & -13.6\%                          & -66.31                                & 7.24                                  \\ \hline
+\multicolumn{1}{|c|}{\textbf{Average}} & \textbf{-3.25\%}                 & \textbf{-62.23}                      & \textbf{4.65}                         \\ \hline
+\end{tabular}
+\label{tab:time}
+
+\end{table}
+Finally, the research explores the exploitation of ROI characteristics within the framework to reduce complexity by adjusting the intra prediction mode. The results are compared between the proposed method using approaches based on YOLO and the H.266/VVC video encoding standard with the reference software VVenc as described in Table \ref{tab:time}. Accordingly, the proposed method yields an average bitrate saving of 62.25\% and a 4.65 increase in BD-MOTA. Meanwhile, these YOLO-based approaches contribute to a 3.25\% reduction in encoding time compared to the original H.266/VVC video encoding standard.
+
+\section{CONCLUSION}
+In this paper, to achieve highly efficient video compression for machines, we propose a Decoder-ROI based VVC architecture, which involves modifications to the latest VVC coding standard by integrating a ROI extraction and an adaptive rate allocation structure. The proposed Decoder-ROI VVC leverages solely on the decoded information to predict the ROI, thereby obviating the necessity for the encoder to transmit additional bitrate to achieve a commensurate ROI representation. The performance evaluation demonstrates that the proposed Decoder - ROI VVC framework achieves significant bitrate savings when employing YOLO for ROI detection. Specifically, leveraging YOLO results in a 53\% bitrate reduction, with the potential for maximum savings of approximately 86\% on the MOT16 test dataset. Future work could focus on extending the Decoder-ROI concept to alternative configurations such as random access (RA) and low-delay P (LDP). Moreover, extracting ROI information from frames of different perspectives could further adapt VVC to VCM tasks.
+
+\section*{Acknowledgment}
+This research was funded by the University of Engineering and Technology, Vietnam National University, Hanoi, under grant number CN23.18.
+
+% references section
+\bibliographystyle{IEEEtran}
+\bibliography{reference}
+{\small
+\newpage
+% biography section
+\begin{IEEEbiography}[{\includegraphics[width=1in,height=1.25in,clip,keepaspectratio]{images/Picture1.jpg}}]{Bui Thanh Huong}
+%% Affiliation and educational background.
+received the BSc degree in Electronics and Telecommunications, in 2000; and MSc degree in Information processing and Communication, in 2004, all from Hanoi University of Science and Technology (HUST). She is currently a main lecturer in the Department of Computer Engineering, Hanoi University of Civill Engineering, Vietnam. Her research interests are digital systems, digital signal processing and Multimedia Technology.
+\end{IEEEbiography}
+
+\vspace{-1cm}	
+\begin{IEEEbiography}
+[{\includegraphics[width=1in,height=1.25in,clip,keepaspectratio]{images/visa_minh (2).jpg}}]{Minh Do Ngoc} received a B.S. and M.S. degree in Computer Engineering from the VNU University of Engineering and Technology, in 2021, 2022. His research interests include AI Vision and Signal processing. Currently, he is currently member at the Faculty of Electronics and Telecommunications, VNU University of Engineering and Technology, Vietnam.
+\end{IEEEbiography}
+	
+\begin{IEEEbiography}
+[{\includegraphics[width=1in,height=1.25in,clip,keepaspectratio]{images/x.png}}]{A/Prof. Hoang Van Xiem}  is the Head and founding member of the Department of Robotics Engineering, Vietnam National University – University of Engineering and Technology (VNU-UET). He was the former Director of the Center for Quality Assurance in VNU – UET (2021 – 2022 term). 
+He received a Ph.D. degree from Lisbon University, Portugal, in 2015, a M.Sc. degree from Sungkyunkwan University, South Korea, in 2011, and BE degree from Hanoi University of Science and Technology, 2009, all in Electrical and Computer Engineering. 
+He has published nearly 100 papers on image/video processing and robotics vision. He is an editor of the Frontiers in Signal Processing Journal and VNU-Journal of Science and reviewed for a number of top IEEE, Elsevier and Springer Journals. He has received a number of prestigious awards including 2023 IEEE RIVF, 2022 REV-ECIT, 2018 IWAIT and 2015 PCS best paper awards, his work on distributed video coding received the 2021 REV-AWARD, 2020 Innova Patent Silver Award (Croatia), and the Fraunhofer Portugal Challenge Award 2015. 
+He is one of ten young research scientists (one of two in ICT) was awarded the Golden Globe in Science and Technology 2019 and in 2021 – 2022 term, he was one of the youngest associate professors appointed by the State council for professorship in Vietnam.
+
+\end{IEEEbiography}
+
+
+\vfill
+
+}
+
+
+\end{document}

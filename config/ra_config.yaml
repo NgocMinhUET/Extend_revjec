@@ -1,0 +1,36 @@
+# Random Access (RA) Configuration
+# Inherits from default_config.yaml and overrides specific settings
+
+# Encoder Settings
+encoder:
+  config: "RA"
+  gop_size: 16  # Hierarchical B-frames
+  intra_period: 32
+  preset: "medium"
+  
+  # RA-specific settings
+  hierarchical_qp: true
+  qp_offset_list: [1, 2, 3, 4]  # QP offsets for hierarchical levels
+
+# Temporal propagation enabled for RA
+roi_detection:
+  temporal:
+    enabled: true
+    keyframe_interval: 16  # Run detector on I-frames only
+    propagation_method: "motion_vector"
+    bidirectional: true  # Bidirectional propagation for B-frames
+    redetection_triggers:
+      motion_threshold: 12.0
+      divergence_threshold: 0.35
+      occlusion_detection: true
+
+# Motion vector extraction
+motion_vectors:
+  enabled: true
+  extraction_method: "vvc_decoder"
+  bidirectional: true  # Extract both forward and backward MVs
+
+# Experiment name
+experiment:
+  name: "ra_configuration"
+  description: "Random Access configuration with hierarchical B-frames"
