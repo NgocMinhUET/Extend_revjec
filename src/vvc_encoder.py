@@ -219,22 +219,54 @@ class VVCEncoder:
             'frames': 0,
         }
         
-        # Parse bitrate
-        bitrate_match = re.search(r'Total Bitrate:\s+([\d.]+)\s+kbps', stderr)
-        if bitrate_match:
-            stats['bitrate'] = float(bitrate_match.group(1))
+        # Debug: log the actual output
+        self.logger.debug("VVenC output:")
+        self.logger.debug(stderr)
         
-        # Parse PSNR
-        psnr_match = re.search(r'PSNR Y:\s+([\d.]+)\s+U:\s+([\d.]+)\s+V:\s+([\d.]+)', stderr)
-        if psnr_match:
-            stats['psnr_y'] = float(psnr_match.group(1))
-            stats['psnr_u'] = float(psnr_match.group(2))
-            stats['psnr_v'] = float(psnr_match.group(3))
+        # Parse bitrate - try multiple patterns
+        bitrate_patterns = [
+            r'Total Bitrate:\s+([\d.]+)\s+kbps',
+            r'bitrate.*?:\s+([\d.]+)\s+kbps',
+            r'avg bitrate\s+([\d.]+)\s+kbit/s',
+            r'bitrate\s+([\d.]+)',
+        ]
+        for pattern in bitrate_patterns:
+            bitrate_match = re.search(pattern, stderr, re.IGNORECASE)
+            if bitrate_match:
+                stats['bitrate'] = float(bitrate_match.group(1))
+                break
+        
+        # Parse PSNR - try multiple patterns
+        psnr_patterns = [
+            r'PSNR Y:\s+([\d.]+)\s+U:\s+([\d.]+)\s+V:\s+([\d.]+)',
+            r'PSNR.*?Y\s+([\d.]+)\s+U\s+([\d.]+)\s+V\s+([\d.]+)',
+            r'Y:([\d.]+)\s+U:([\d.]+)\s+V:([\d.]+)',
+            r'Y\s+([\d.]+)\s+dB.*?U\s+([\d.]+)\s+dB.*?V\s+([\d.]+)\s+dB',
+        ]
+        for pattern in psnr_patterns:
+            psnr_match = re.search(pattern, stderr, re.IGNORECASE | re.DOTALL)
+            if psnr_match:
+                stats['psnr_y'] = float(psnr_match.group(1))
+                stats['psnr_u'] = float(psnr_match.group(2))
+                stats['psnr_v'] = float(psnr_match.group(3))
+                break
         
         # Parse number of frames
-        frames_match = re.search(r'(\d+)\s+frames', stderr)
-        if frames_match:
-            stats['frames'] = int(frames_match.group(1))
+        frames_patterns = [
+            r'(\d+)\s+frames',
+            r'frames.*?:\s*(\d+)',
+            r'encoded\s+(\d+)\s+frames',
+        ]
+        for pattern in frames_patterns:
+            frames_match = re.search(pattern, stderr, re.IGNORECASE)
+            if frames_match:
+                stats['frames'] = int(frames_match.group(1))
+                break
+        
+        # If parsing failed, log warning
+        if stats['bitrate'] == 0.0 or stats['psnr_y'] == 0.0:
+            self.logger.warning("Failed to parse some encoding statistics")
+            self.logger.warning(f"Parsed: bitrate={stats['bitrate']}, PSNR_Y={stats['psnr_y']}")
         
         return stats
     

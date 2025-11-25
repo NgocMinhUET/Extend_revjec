@@ -19,10 +19,11 @@ from src.vvc_encoder import VVCEncoder
 from src.utils import load_config
 
 
-def create_experiment_logger(name: str, log_file: Path) -> logging.Logger:
+def create_experiment_logger(name: str, log_file: Path, debug: bool = False) -> logging.Logger:
     """Create a simple logger for experiments with console + file handlers."""
     logger = logging.getLogger(name)
-    logger.setLevel(logging.INFO)
+    level = logging.DEBUG if debug else logging.INFO
+    logger.setLevel(level)
 
     # Avoid duplicate handlers when rerunning
     if logger.handlers:
@@ -31,10 +32,12 @@ def create_experiment_logger(name: str, log_file: Path) -> logging.Logger:
     formatter = logging.Formatter('%(asctime)s - %(levelname)s - %(message)s')
 
     console_handler = logging.StreamHandler()
+    console_handler.setLevel(level)
     console_handler.setFormatter(formatter)
     logger.addHandler(console_handler)
 
     file_handler = logging.FileHandler(log_file)
+    file_handler.setLevel(level)
     file_handler.setFormatter(formatter)
     logger.addHandler(file_handler)
 
@@ -51,6 +54,8 @@ def parse_args():
                         help='QP values to test')
     parser.add_argument('--max-frames', type=int, default=None,
                         help='Maximum frames to encode (for testing, default: all)')
+    parser.add_argument('--debug', action='store_true',
+                        help='Enable debug logging to see VVenC output')
     return parser.parse_args()
 
 
@@ -106,7 +111,7 @@ def encode_sequence(encoder, yuv_path, output_path, qp, width, height, logger):
     return stats
 
 
-def run_baseline_experiment(config_path, sequence_name=None, qp_values=[22, 27, 32, 37], max_frames=None):
+def run_baseline_experiment(config_path, sequence_name=None, qp_values=[22, 27, 32, 37], max_frames=None, debug=False):
     """Run baseline VVC encoding experiment"""
     
     # Load configuration (automatically merges with default_config.yaml)
@@ -115,7 +120,7 @@ def run_baseline_experiment(config_path, sequence_name=None, qp_values=[22, 27, 
     # Setup logging
     log_dir = Path('results/logs/baseline')
     log_dir.mkdir(parents=True, exist_ok=True)
-    logger = create_experiment_logger('baseline', log_dir / 'baseline.log')
+    logger = create_experiment_logger('baseline', log_dir / 'baseline.log', debug=debug)
     
     logger.info("="*60)
     logger.info("EXPERIMENT 1: BASELINE VVC ENCODING")
@@ -237,4 +242,4 @@ def run_baseline_experiment(config_path, sequence_name=None, qp_values=[22, 27, 
 
 if __name__ == '__main__':
     args = parse_args()
-    run_baseline_experiment(args.config, args.sequence, args.qp, args.max_frames)
+    run_baseline_experiment(args.config, args.sequence, args.qp, args.max_frames, args.debug)
