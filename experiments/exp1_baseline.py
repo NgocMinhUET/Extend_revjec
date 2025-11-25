@@ -123,7 +123,9 @@ def run_baseline_experiment(config_path, sequence_name=None, qp_values=[22, 27, 
     logger.info(f"Encoder: {encoder_info['software']} v{encoder_info['version']}")
     
     # Get dataset path
-    dataset_path = Path(config['dataset']['root_dir'])
+    dataset_root = Path(config['dataset']['root_dir'])
+    dataset_name = config['dataset']['name']
+    dataset_path = dataset_root / dataset_name
     sequences_to_process = []
     
     if sequence_name:
@@ -131,7 +133,11 @@ def run_baseline_experiment(config_path, sequence_name=None, qp_values=[22, 27, 
     else:
         # Process all training sequences
         train_dir = dataset_path / 'train'
-        sequences_to_process = sorted([d for d in train_dir.iterdir() if d.is_dir()])
+        if train_dir.exists():
+            sequences_to_process = sorted([d for d in train_dir.iterdir() if d.is_dir()])
+        else:
+            logger.error(f"Training directory not found: {train_dir}")
+            return
     
     # Results storage
     all_results = []
@@ -206,15 +212,19 @@ def run_baseline_experiment(config_path, sequence_name=None, qp_values=[22, 27, 
     logger.info(f"Total sequences processed: {len(sequences_to_process)}")
     
     # Print summary
-    logger.info("\nSummary by QP:")
-    for qp in qp_values:
-        qp_results = df[df['qp'] == qp]
-        avg_bitrate = qp_results['bitrate'].mean()
-        avg_psnr = qp_results['psnr_y'].mean()
-        avg_time = qp_results['encoding_time'].mean()
-        logger.info(f"QP={qp}: {avg_bitrate:.2f} kbps, "
-                   f"PSNR={avg_psnr:.2f} dB, "
-                   f"Time={avg_time:.2f}s")
+    if not df.empty:
+        logger.info("\nSummary by QP:")
+        for qp in qp_values:
+            qp_results = df[df['qp'] == qp]
+            if not qp_results.empty:
+                avg_bitrate = qp_results['bitrate'].mean()
+                avg_psnr = qp_results['psnr_y'].mean()
+                avg_time = qp_results['encoding_time'].mean()
+                logger.info(f"QP={qp}: {avg_bitrate:.2f} kbps, "
+                           f"PSNR={avg_psnr:.2f} dB, "
+                           f"Time={avg_time:.2f}s")
+    else:
+        logger.warning("No results to summarize - all sequences failed to process")
 
 
 if __name__ == '__main__':
