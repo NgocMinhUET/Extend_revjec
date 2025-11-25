@@ -229,10 +229,11 @@ class VVCEncoder:
         
         # Parse bitrate - try multiple patterns
         bitrate_patterns = [
+            r'avg_bitrate[=\s]+([\d.]+)\s+kbps',  # VVenC: avg_bitrate= 29914.88 kbps
+            r'Bitrate\s+([\d.]+)',  # VVenC table: Bitrate     Y-PSNR
             r'Total Bitrate:\s+([\d.]+)\s+kbps',
             r'bitrate.*?:\s+([\d.]+)\s+kbps',
             r'avg bitrate\s+([\d.]+)\s+kbit/s',
-            r'bitrate\s+([\d.]+)',
         ]
         for pattern in bitrate_patterns:
             bitrate_match = re.search(pattern, output_text, re.IGNORECASE)
@@ -240,11 +241,14 @@ class VVCEncoder:
                 stats['bitrate'] = float(bitrate_match.group(1))
                 break
         
-        # Parse PSNR - try multiple patterns
+        # Parse PSNR - VVenC outputs in table format after "Y-PSNR    U-PSNR    V-PSNR"
+        # Example: "          50    a   29914.8816   42.5487   50.7075   50.9686   43.9565"
         psnr_patterns = [
-            r'PSNR Y:\s+([\d.]+)\s+U:\s+([\d.]+)\s+V:\s+([\d.]+)',
-            r'PSNR.*?Y\s+([\d.]+)\s+U\s+([\d.]+)\s+V\s+([\d.]+)',
-            r'Y:([\d.]+)\s+U:([\d.]+)\s+V:([\d.]+)',
+            # VVenC table format: Bitrate Y-PSNR U-PSNR V-PSNR
+            r'Y-PSNR\s+U-PSNR\s+V-PSNR.*?[\d]+\s+[a-z]?\s+[\d.]+\s+([\d.]+)\s+([\d.]+)\s+([\d.]+)',
+            # Standard format
+            r'Y-PSNR[:\s]+([\d.]+)\s+U-PSNR[:\s]+([\d.]+)\s+V-PSNR[:\s]+([\d.]+)',
+            r'PSNR.*?Y[:\s]+([\d.]+)\s+U[:\s]+([\d.]+)\s+V[:\s]+([\d.]+)',
             r'Y\s+([\d.]+)\s+dB.*?U\s+([\d.]+)\s+dB.*?V\s+([\d.]+)\s+dB',
         ]
         for pattern in psnr_patterns:
