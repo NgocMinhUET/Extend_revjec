@@ -86,20 +86,20 @@
 
 ---
 
-### 6. EXPERIMENT SCRIPTS (29%) ⚠️
+### 6. EXPERIMENT SCRIPTS (43%) ⚠️
 
 | Script | Status | Priority | Note |
 |--------|--------|----------|------|
 | experiments/__init__.py | ✅ | LOW | Created |
-| experiments/exp1_baseline.py | ✅ | HIGH | **CREATED - Phase 1** |
-| experiments/exp2_decoder_roi.py | ❌ | HIGH | **NEED CREATE - Phase 1** |
+| experiments/exp1_baseline.py | ✅ | HIGH | **TESTED & WORKING** |
+| experiments/exp2_decoder_roi.py | ✅ | HIGH | **CREATED - Phase 1** |
 | experiments/exp3_temporal_roi.py | ❌ | MEDIUM | Phase 2 |
 | experiments/exp4_hierarchical.py | ❌ | MEDIUM | Phase 3 |
 | experiments/exp5_full_system.py | ❌ | MEDIUM | Phase 4 |
 | experiments/run_all_experiments.py | ❌ | LOW | Phase 5 |
 
-**Total:** 2/7 scripts ⚠️  
-**Note:** Baseline ready, need Decoder-ROI for Phase 1 completion
+**Total:** 3/7 scripts (43%) ⚠️  
+**Note:** Phase 1 experiments complete, ready for testing
 
 ---
 
@@ -189,12 +189,12 @@ Extend_revjec/
 | Configuration | 4/4 (100%) | ✅ COMPLETE |
 | VVenC Integration | 4/4 (100%) | ✅ COMPLETE |
 | Core Infrastructure | 6/10 (60%) | ⚠️ PARTIAL |
-| Experiment Scripts | 2/7 (29%) | ⚠️ PARTIAL |
+| Experiment Scripts | 3/7 (43%) | ⚠️ PARTIAL |
 | Directory READMEs | 4/4 (100%) | ✅ COMPLETE |
 
-### Overall: 42/70 files (60%)
+### Overall: 43/70 files (61%)
 
-**Note:** Added experiment scripts (2/7), now Phase 1 is 80% complete
+**Note:** Phase 1 experiments complete (baseline + decoder-ROI), ready for testing
 
 ---
 
