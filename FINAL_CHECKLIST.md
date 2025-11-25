@@ -86,20 +86,20 @@
 
 ---
 
-### 6. EXPERIMENT SCRIPTS (0%) ❌
+### 6. EXPERIMENT SCRIPTS (29%) ⚠️
 
 | Script | Status | Priority | Note |
 |--------|--------|----------|------|
-| experiments/__init__.py | ❌ | LOW | Empty file |
-| experiments/exp1_baseline.py | ❌ | HIGH | **NEED CREATE** |
-| experiments/exp2_decoder_roi.py | ❌ | HIGH | **NEED CREATE** |
-| experiments/exp3_temporal_roi.py | ❌ | MEDIUM | Optional |
-| experiments/exp4_hierarchical.py | ❌ | MEDIUM | Optional |
-| experiments/exp5_full_system.py | ❌ | MEDIUM | Optional |
-| experiments/run_all_experiments.py | ❌ | LOW | Optional |
+| experiments/__init__.py | ✅ | LOW | Created |
+| experiments/exp1_baseline.py | ✅ | HIGH | **CREATED - Phase 1** |
+| experiments/exp2_decoder_roi.py | ❌ | HIGH | **NEED CREATE - Phase 1** |
+| experiments/exp3_temporal_roi.py | ❌ | MEDIUM | Phase 2 |
+| experiments/exp4_hierarchical.py | ❌ | MEDIUM | Phase 3 |
+| experiments/exp5_full_system.py | ❌ | MEDIUM | Phase 4 |
+| experiments/run_all_experiments.py | ❌ | LOW | Phase 5 |
 
-**Total:** 0/7 scripts ❌  
-**Note:** Can be created later, not blocking GitHub push
+**Total:** 2/7 scripts ⚠️  
+**Note:** Baseline ready, need Decoder-ROI for Phase 1 completion
 
 ---
 
@@ -184,15 +184,17 @@ Extend_revjec/
 
 | Category | Progress | Status |
 |----------|----------|--------|
-| Documentation | 10/10 (100%) | ✅ COMPLETE |
+| Documentation | 18/18 (100%) | ✅ COMPLETE |
 | GitHub Files | 5/5 (100%) | ✅ COMPLETE |
 | Configuration | 4/4 (100%) | ✅ COMPLETE |
 | VVenC Integration | 4/4 (100%) | ✅ COMPLETE |
 | Core Infrastructure | 6/10 (60%) | ⚠️ PARTIAL |
-| Experiment Scripts | 0/7 (0%) | ❌ MISSING |
+| Experiment Scripts | 2/7 (29%) | ⚠️ PARTIAL |
 | Directory READMEs | 4/4 (100%) | ✅ COMPLETE |
 
-### Overall: 33/44 files (75%)
+### Overall: 42/70 files (60%)
+
+**Note:** Added experiment scripts (2/7), now Phase 1 is 80% complete
 
 ---
 

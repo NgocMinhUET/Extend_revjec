@@ -72,8 +72,11 @@ cd Extend_revjec
 
 ### Bước 2: Setup Python
 ```bash
-python3 -m venv venv
-source venv/bin/activate
+# Tạo và kích hoạt môi trường conda
+conda create -n roi_vvc python=3.10 -y
+conda activate roi_vvc
+
+# Cài đặt dependencies
 pip install -r requirements.txt
 ```
 
