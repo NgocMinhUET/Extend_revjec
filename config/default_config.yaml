@@ -44,9 +44,11 @@ roi_detection:
   temporal:
     enabled: true
     keyframe_interval: 16  # Run detector every N frames
-    propagation_method: "motion_vector"  # motion_vector, optical_flow
+    propagation_method: "optical_flow"  # motion_vector, optical_flow
+    optical_flow_method: "farneback"  # farneback, lucas_kanade
     redetection_triggers:
-      motion_threshold: 10.0  # pixels
+      motion_threshold: 30.0  # pixels - avg motion to trigger re-detection
+      redetection_threshold: 50.0  # pixels - max motion to trigger re-detection
       divergence_threshold: 0.3  # ratio
       occlusion_detection: true
 
