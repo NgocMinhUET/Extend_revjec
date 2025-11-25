@@ -6,7 +6,7 @@ encoder:
   config: "AI"
   gop_size: 1  # All intra
   intra_period: 1
-  preset: "medium"
+  preset: "faster"  # Use faster preset for quicker encoding (can use medium/slow for final results)
 
 # Temporal propagation disabled for AI
 roi_detection:

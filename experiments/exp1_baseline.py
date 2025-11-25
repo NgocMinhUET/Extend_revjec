@@ -49,10 +49,12 @@ def parse_args():
                         help='Specific sequence to encode (default: all)')
     parser.add_argument('--qp', type=int, nargs='+', default=[22, 27, 32, 37],
                         help='QP values to test')
+    parser.add_argument('--max-frames', type=int, default=None,
+                        help='Maximum frames to encode (for testing, default: all)')
     return parser.parse_args()
 
 
-def load_sequence(sequence_path):
+def load_sequence(sequence_path, max_frames=None):
     """Load image sequence from MOT dataset"""
     img_dir = Path(sequence_path) / 'img1'
     if not img_dir.exists():
@@ -62,6 +64,10 @@ def load_sequence(sequence_path):
     images = sorted(img_dir.glob('*.jpg'))
     if not images:
         raise ValueError(f"No images found in {img_dir}")
+    
+    # Limit frames if specified
+    if max_frames is not None and max_frames > 0:
+        images = images[:max_frames]
     
     return images
 
@@ -100,7 +106,7 @@ def encode_sequence(encoder, yuv_path, output_path, qp, width, height, logger):
     return stats
 
 
-def run_baseline_experiment(config_path, sequence_name=None, qp_values=[22, 27, 32, 37]):
+def run_baseline_experiment(config_path, sequence_name=None, qp_values=[22, 27, 32, 37], max_frames=None):
     """Run baseline VVC encoding experiment"""
     
     # Load configuration (automatically merges with default_config.yaml)
@@ -116,6 +122,8 @@ def run_baseline_experiment(config_path, sequence_name=None, qp_values=[22, 27, 
     logger.info("="*60)
     logger.info(f"Configuration: {config_path}")
     logger.info(f"QP values: {qp_values}")
+    if max_frames:
+        logger.info(f"Max frames: {max_frames} (test mode)")
     
     # Initialize encoder
     encoder = VVCEncoder(config, logger)
@@ -151,7 +159,7 @@ def run_baseline_experiment(config_path, sequence_name=None, qp_values=[22, 27, 
         
         try:
             # Load images
-            images = load_sequence(seq_path)
+            images = load_sequence(seq_path, max_frames)
             logger.info(f"Found {len(images)} frames")
             
             # Convert to YUV
@@ -229,4 +237,4 @@ def run_baseline_experiment(config_path, sequence_name=None, qp_values=[22, 27, 
 
 if __name__ == '__main__':
     args = parse_args()
-    run_baseline_experiment(args.config, args.sequence, args.qp)
+    run_baseline_experiment(args.config, args.sequence, args.qp, args.max_frames)

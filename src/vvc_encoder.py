@@ -119,7 +119,7 @@ class VVCEncoder:
                 cmd,
                 capture_output=True,
                 text=True,
-                timeout=3600  # 1 hour timeout
+                timeout=10800  # 3 hour timeout (AI mode can be very slow)
             )
             
             encoding_time = time.time() - start_time
