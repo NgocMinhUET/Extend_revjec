@@ -187,18 +187,15 @@ class VVCEncoder:
             cmd.extend(['--GOPSize', str(self.gop_size)])
             cmd.extend(['--LowDelay', '1'])
         
-        # CTU size
-        cmd.extend(['--CTUSize', str(self.ctu_size)])
-        
         # Threads
         cmd.extend(['--threads', str(self.threads)])
         
         # QP map (for ROI encoding)
         if qp_map and os.path.exists(qp_map):
-            cmd.extend(['--QPMap', qp_map])
+            cmd.extend(['--qpmap', qp_map])
         
-        # Additional options
-        cmd.extend(['--SEIDecodedPictureHash', '0'])  # Disable hash for speed
+        # NOTE: CTUSize and SEIDecodedPictureHash options may not be available
+        # in all vvencapp versions. They are removed to ensure compatibility.
         
         return cmd
     
