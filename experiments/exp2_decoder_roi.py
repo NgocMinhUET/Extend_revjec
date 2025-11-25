@@ -2,6 +2,23 @@
 Experiment 2: Decoder-ROI based VVC Encoding
 Reproduce original paper results with YOLO-based ROI detection and adaptive QP mapping
 
+⚠️ IMPORTANT LIMITATION:
+VVenC CLI (vvencapp) does NOT support CTU-level QP maps via command line.
+CTU-level QP control requires using VVenC library API directly.
+
+This experiment DEMONSTRATES the ROI detection and QP map generation workflow:
+1. ✅ YOLOv8 ROI detection works
+2. ✅ CTU-level QP map generation works
+3. ✅ QP map visualization works
+4. ❌ Actual CTU-level QP encoding NOT WORKING (VVenC CLI limitation)
+
+Currently encodes with UNIFORM QP (same as baseline) but tracks ROI statistics.
+
+FUTURE WORK:
+- Use VVenC C++ library API for true CTU-level QP control
+- Or use per-frame QP adaptation as approximation
+- Or implement tile-based encoding with different QPs
+
 CHECKLIST:
 [x] ROIDetector available (src/roi_detector.py)
 [x] VVCEncoder.encode_with_qp_map available (src/vvc_encoder.py)
@@ -9,19 +26,20 @@ CHECKLIST:
 [x] Detection workflow clear (YOLO -> bboxes -> QP map)
 [ ] Test with sample sequence
 [ ] Verify QP map generation
-[ ] Compare with baseline results
+[ ] Compare with baseline results (will be same due to limitation)
 
-WORKFLOW:
+WORKFLOW (Current):
 1. Load video sequence
-2. Detect ROI with YOLOv8 for each frame
-3. Generate CTU-level QP map (ROI: lower QP, Background: base QP)
-4. Encode with VVenC using QP map
-5. Compare bitrate/PSNR with baseline
+2. Detect ROI with YOLOv8 for each frame ✅
+3. Generate CTU-level QP map (ROI: lower QP, Background: base QP) ✅
+4. Encode with VVenC (uniform QP - limitation) ⚠️
+5. Save QP map visualization for analysis ✅
 
-EXPECTED RESULTS (from paper):
-- Bitrate reduction: 15-25%
-- PSNR degradation: < 1 dB
-- Detection overhead: minimal
+EXPECTED RESULTS:
+- Bitrate: SAME as baseline (due to limitation)
+- PSNR: SAME as baseline (due to limitation)
+- ROI detection: Working and tracked
+- QP map: Generated and can be visualized
 """
 
 import sys
@@ -310,9 +328,14 @@ def run_decoder_roi_experiment(config_path, sequence_name=None, qp_values=[22, 2
     logger.info("="*60)
     logger.info("EXPERIMENT 2: DECODER-ROI VVC ENCODING")
     logger.info("="*60)
+    logger.warning("⚠️  LIMITATION: VVenC CLI does not support CTU-level QP maps")
+    logger.warning("⚠️  This experiment demonstrates ROI detection & QP map generation")
+    logger.warning("⚠️  Actual encoding uses UNIFORM QP (results = baseline)")
+    logger.warning("⚠️  See docstring for full explanation and future work")
+    logger.info("="*60)
     logger.info(f"Configuration: {config_path}")
     logger.info(f"QP values: {qp_values}")
-    logger.info(f"Delta QP ROI: -{delta_qp_roi}")
+    logger.info(f"Delta QP ROI: -{delta_qp_roi} (for QP map generation only)")
     if max_frames:
         logger.info(f"Max frames: {max_frames} (test mode)")
     

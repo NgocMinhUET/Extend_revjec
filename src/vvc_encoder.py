@@ -195,8 +195,13 @@ class VVCEncoder:
         cmd.extend(['--verbosity', '4'])  # Verbose mode to print encoding stats
         
         # QP map (for ROI encoding)
+        # NOTE: VVenC app does not support --qpmap option in command line
+        # CTU-level QP control requires using VVenC library API, not available via CLI
+        # For now, we log this limitation and encode with base QP
         if qp_map and os.path.exists(qp_map):
-            cmd.extend(['--qpmap', qp_map])
+            self.logger.warning("QP map provided but VVenC CLI does not support --qpmap option")
+            self.logger.warning("Encoding with uniform base QP instead (CTU-level QP requires library API)")
+            # cmd.extend(['--qpmap', qp_map])  # Not supported
         
         # NOTE: CTUSize and SEIDecodedPictureHash options may not be available
         # in all vvencapp versions. They are removed to ensure compatibility.
