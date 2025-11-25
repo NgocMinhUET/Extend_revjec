@@ -17,7 +17,28 @@ import cv2
 import numpy as np
 
 from src.vvc_encoder import VVCEncoder
-from src.utils import setup_logging, create_output_dirs
+
+
+def create_experiment_logger(name: str, log_file: Path) -> logging.Logger:
+    """Create a simple logger for experiments with console + file handlers."""
+    logger = logging.getLogger(name)
+    logger.setLevel(logging.INFO)
+
+    # Avoid duplicate handlers when rerunning
+    if logger.handlers:
+        logger.handlers.clear()
+
+    formatter = logging.Formatter('%(asctime)s - %(levelname)s - %(message)s')
+
+    console_handler = logging.StreamHandler()
+    console_handler.setFormatter(formatter)
+    logger.addHandler(console_handler)
+
+    file_handler = logging.FileHandler(log_file)
+    file_handler.setFormatter(formatter)
+    logger.addHandler(file_handler)
+
+    return logger
 
 
 def parse_args():
@@ -89,7 +110,7 @@ def run_baseline_experiment(config_path, sequence_name=None, qp_values=[22, 27, 
     # Setup logging
     log_dir = Path('results/logs/baseline')
     log_dir.mkdir(parents=True, exist_ok=True)
-    logger = setup_logging('baseline', log_dir / 'baseline.log')
+    logger = create_experiment_logger('baseline', log_dir / 'baseline.log')
     
     logger.info("="*60)
     logger.info("EXPERIMENT 1: BASELINE VVC ENCODING")
