@@ -87,9 +87,7 @@ def run_baseline_experiment(config_path, sequence_name=None, qp_values=[22, 27, 
         config = yaml.safe_load(f)
     
     # Setup logging
-    log_dir = Path('results/logs/baseline')
-    log_dir.mkdir(parents=True, exist_ok=True)
-    logger = setup_logging('baseline', log_dir / 'baseline.log')
+    logger = setup_logging(config)
     
     logger.info("="*60)
     logger.info("EXPERIMENT 1: BASELINE VVC ENCODING")
