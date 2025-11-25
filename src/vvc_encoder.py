@@ -128,8 +128,9 @@ class VVCEncoder:
                 self.logger.error(f"Encoding failed: {result.stderr}")
                 raise RuntimeError(f"VVenC encoding failed: {result.stderr}")
             
-            # Parse output
-            stats = self._parse_output(result.stderr, encoding_time)
+            # Parse output (VVenC may output to stdout or stderr)
+            output_text = result.stdout if result.stdout else result.stderr
+            stats = self._parse_output(output_text, encoding_time)
             stats['output_file'] = output_file
             
             self.logger.info(
@@ -190,6 +191,9 @@ class VVCEncoder:
         # Threads
         cmd.extend(['--threads', str(self.threads)])
         
+        # Verbosity to get statistics output
+        cmd.extend(['--verbosity', '4'])  # Verbose mode to print encoding stats
+        
         # QP map (for ROI encoding)
         if qp_map and os.path.exists(qp_map):
             cmd.extend(['--qpmap', qp_map])
@@ -199,12 +203,12 @@ class VVCEncoder:
         
         return cmd
     
-    def _parse_output(self, stderr: str, encoding_time: float) -> Dict:
+    def _parse_output(self, output_text: str, encoding_time: float) -> Dict:
         """
         Parse VVenC output to extract statistics
         
         Args:
-            stderr: VVenC stderr output
+            output_text: VVenC stdout/stderr output
             encoding_time: Measured encoding time
             
         Returns:
@@ -221,7 +225,7 @@ class VVCEncoder:
         
         # Debug: log the actual output
         self.logger.debug("VVenC output:")
-        self.logger.debug(stderr)
+        self.logger.debug(output_text if output_text else "(empty)")
         
         # Parse bitrate - try multiple patterns
         bitrate_patterns = [
@@ -231,7 +235,7 @@ class VVCEncoder:
             r'bitrate\s+([\d.]+)',
         ]
         for pattern in bitrate_patterns:
-            bitrate_match = re.search(pattern, stderr, re.IGNORECASE)
+            bitrate_match = re.search(pattern, output_text, re.IGNORECASE)
             if bitrate_match:
                 stats['bitrate'] = float(bitrate_match.group(1))
                 break
@@ -244,7 +248,7 @@ class VVCEncoder:
             r'Y\s+([\d.]+)\s+dB.*?U\s+([\d.]+)\s+dB.*?V\s+([\d.]+)\s+dB',
         ]
         for pattern in psnr_patterns:
-            psnr_match = re.search(pattern, stderr, re.IGNORECASE | re.DOTALL)
+            psnr_match = re.search(pattern, output_text, re.IGNORECASE | re.DOTALL)
             if psnr_match:
                 stats['psnr_y'] = float(psnr_match.group(1))
                 stats['psnr_u'] = float(psnr_match.group(2))
@@ -258,7 +262,7 @@ class VVCEncoder:
             r'encoded\s+(\d+)\s+frames',
         ]
         for pattern in frames_patterns:
-            frames_match = re.search(pattern, stderr, re.IGNORECASE)
+            frames_match = re.search(pattern, output_text, re.IGNORECASE)
             if frames_match:
                 stats['frames'] = int(frames_match.group(1))
                 break
