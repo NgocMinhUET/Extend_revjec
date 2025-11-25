@@ -8,7 +8,6 @@ import os
 sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
 
 import argparse
-import yaml
 import logging
 from pathlib import Path
 import pandas as pd
@@ -17,6 +16,7 @@ import cv2
 import numpy as np
 
 from src.vvc_encoder import VVCEncoder
+from src.utils import load_config
 
 
 def create_experiment_logger(name: str, log_file: Path) -> logging.Logger:
@@ -103,9 +103,8 @@ def encode_sequence(encoder, yuv_path, output_path, qp, width, height, logger):
 def run_baseline_experiment(config_path, sequence_name=None, qp_values=[22, 27, 32, 37]):
     """Run baseline VVC encoding experiment"""
     
-    # Load configuration
-    with open(config_path, 'r') as f:
-        config = yaml.safe_load(f)
+    # Load configuration (automatically merges with default_config.yaml)
+    config = load_config(config_path)
     
     # Setup logging
     log_dir = Path('results/logs/baseline')
