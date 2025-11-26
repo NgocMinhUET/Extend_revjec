@@ -298,7 +298,12 @@ class PerformanceEvaluator:
         df = pd.DataFrame(comparisons)
         
         if format == 'markdown':
-            table = df.to_markdown(index=False, floatfmt='.2f')
+            try:
+                table = df.to_markdown(index=False, floatfmt='.2f')
+            except ImportError:
+                # Fallback if tabulate is not installed
+                self.logger.warning("tabulate not installed, using simple markdown format")
+                table = self._df_to_simple_markdown(df)
         elif format == 'latex':
             table = df.to_latex(index=False, float_format='%.2f')
         elif format == 'csv':
@@ -312,6 +317,34 @@ class PerformanceEvaluator:
             self.logger.info(f"Comparison table saved to {output_path}")
         
         return table
+    
+    def _df_to_simple_markdown(self, df: pd.DataFrame) -> str:
+        """
+        Simple markdown table generator (fallback if tabulate not available)
+        
+        Args:
+            df: DataFrame to convert
+            
+        Returns:
+            Markdown formatted string
+        """
+        # Header
+        headers = df.columns.tolist()
+        header_row = "| " + " | ".join(headers) + " |"
+        separator = "|" + "|".join([" --- " for _ in headers]) + "|"
+        
+        # Rows
+        rows = []
+        for _, row in df.iterrows():
+            formatted_values = []
+            for col, val in row.items():
+                if isinstance(val, float):
+                    formatted_values.append(f"{val:.2f}")
+                else:
+                    formatted_values.append(str(val))
+            rows.append("| " + " | ".join(formatted_values) + " |")
+        
+        return "\n".join([header_row, separator] + rows)
     
     def generate_rd_curve_data(self,
                               data: pd.DataFrame,
