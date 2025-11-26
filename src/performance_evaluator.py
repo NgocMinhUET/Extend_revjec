@@ -258,10 +258,15 @@ class PerformanceEvaluator:
             'experiment': experiment_name,
             'bd_rate': self.calculate_bd_rate(baseline, test),
             'bd_psnr_y': self.calculate_bd_psnr(baseline, test, psnr_col='psnr_y'),
-            'bd_psnr_u': self.calculate_bd_psnr(baseline, test, psnr_col='psnr_u'),
-            'bd_psnr_v': self.calculate_bd_psnr(baseline, test, psnr_col='psnr_v'),
             'encoding_time_saving': self.calculate_encoding_time_saving(baseline, test),
         }
+        
+        # Calculate BD-PSNR for U and V if available
+        if 'psnr_u' in baseline.columns and 'psnr_u' in test.columns:
+            results['bd_psnr_u'] = self.calculate_bd_psnr(baseline, test, psnr_col='psnr_u')
+        
+        if 'psnr_v' in baseline.columns and 'psnr_v' in test.columns:
+            results['bd_psnr_v'] = self.calculate_bd_psnr(baseline, test, psnr_col='psnr_v')
         
         # Calculate BD-MOTA if available
         if 'mota' in baseline.columns and 'mota' in test.columns:
